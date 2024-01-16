@@ -1,0 +1,150 @@
+# Copyright (C) 2023 Kamil Perzowski - Fungies.io
+# This file is distributed under the GPL2.
+msgid ""
+msgstr ""
+"Project-Id-Version: Keys for Products - Fungies.io 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/keys-for-wp-woo-fungies\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-11-20T15:26:56+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.5.0\n"
+"X-Domain: keys-for-wp-woo-fungies\n"
+
+#. Plugin Name of the plugin
+msgid "Keys for Products - Fungies.io"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "hhttps://fungies.io/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Zarządzanie kluczami do gier, które będą podpięte pod produkt w WooCommerce."
+msgstr ""
+
+#. Author of the plugin
+msgid "Kamil Perzowski - Fungies.io"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://fungies.io/"
+msgstr ""
+
+#: includes/class-keys-manager.php:17
+msgid "Klucze do gier"
+msgstr ""
+
+#: includes/class-keys-manager.php:18
+msgid "Klucz do gry"
+msgstr ""
+
+#: includes/class-keys-manager.php:19
+msgid "Dodaj nowy"
+msgstr ""
+
+#: includes/class-keys-manager.php:20
+msgid "Dodaj nowy klucz"
+msgstr ""
+
+#: includes/class-keys-manager.php:35
+msgid "Gry"
+msgstr ""
+
+#: includes/class-keys-manager.php:36
+#: includes/class-keys-manager.php:85
+#: includes/class-product-keys-manager.php:34
+msgid "Gra"
+msgstr ""
+
+#: includes/class-keys-manager.php:56
+#: includes/class-keys-manager.php:57
+msgid "Import"
+msgstr ""
+
+#: includes/class-keys-manager.php:84
+msgid "Klucz"
+msgstr ""
+
+#: includes/class-keys-manager.php:86
+msgid "Status"
+msgstr ""
+
+#: includes/class-keys-manager.php:87
+msgid "Data dodania"
+msgstr ""
+
+#: includes/class-keys-manager.php:99
+msgid "Brak gry"
+msgstr ""
+
+#: includes/class-keys-manager.php:103
+#: includes/class-keys-manager.php:158
+msgid "Aktywny"
+msgstr ""
+
+#: includes/class-keys-manager.php:103
+#: includes/class-keys-manager.php:159
+msgid "Nieaktywny"
+msgstr ""
+
+#: includes/class-keys-manager.php:114
+msgid "Klucz gry"
+msgstr ""
+
+#: includes/class-keys-manager.php:123
+msgid "Opis po zakupie"
+msgstr ""
+
+#: includes/class-keys-manager.php:132
+msgid "Status klucza"
+msgstr ""
+
+#: includes/class-keys-manager.php:192
+#: includes/class-keys-manager.php:193
+msgid "Wybór gry jest wymagany."
+msgstr ""
+
+#: includes/class-keys-manager.php:212
+#: includes/class-keys-manager.php:213
+msgid "Osiągnięto limit wersji darmowej dodanych kluczy dla wybranej gry."
+msgstr ""
+
+#: includes/class-order-keys-manager.php:90
+msgid "Twój klucz: "
+msgstr ""
+
+#: includes/class-order-keys-manager.php:92
+msgid "Twój klucz do gry"
+msgstr ""
+
+#: includes/class-order-keys-manager.php:121
+msgid "Informacje o kluczach"
+msgstr ""
+
+#: includes/class-order-keys-manager.php:135
+msgid "Klucz:"
+msgstr ""
+
+#: includes/class-product-keys-manager.php:13
+msgid "Klucze"
+msgstr ""
+
+#: includes/class-product-keys-manager.php:27
+msgid "Włącz obsługę kluczy"
+msgstr ""
+
+#: includes/class-product-keys-manager.php:38
+msgid "Wybierz grę"
+msgstr ""
+
+#: keys-for-wp-woo-fungies.php:43
+msgid "WooCommerce jest wymagany dla tego pluginu!"
+msgstr ""
+
+#: templates/free-version-template.php:32
+msgid "Hej!"
+msgstr ""
