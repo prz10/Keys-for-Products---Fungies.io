@@ -1,0 +1,43 @@
+#wpcontent,
+#wpfooter {
+	padding: 0;
+	overflow-x: hidden;
+}
+
+.wrap {
+	min-height: 100vh;
+	width: 100%;
+	color: white;
+	padding: 20px;
+	margin: 0;
+}
+
+.wrap h1 {
+	color: white;
+}
+
+.wrap .content {
+	display: flex;
+	flex-direction: column;
+	-webkit-box-align: center;
+	align-items: center;
+	width: 500px;
+	margin: 50px auto;
+	padding: 3.1rem;
+	background: rgb(36, 44, 55);
+	border: 0.5px solid rgb(47, 62, 82);
+	box-shadow: rgba(96, 53, 236, 0.4) 0px 50px 200px;
+	border-radius: 16px;
+	text-align: left;
+}
+
+.wrap .version-plugin {
+	color: black;
+	background-color: yellow;
+	padding: 5px;
+	font-weight: bold;
+}
+
+#wpbody-content {
+	margin: 0;
+}
