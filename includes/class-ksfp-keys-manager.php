@@ -56,7 +56,7 @@ class Ksfp_Keys_Manager {
 	}
 
 	public function add_admin_menu() {
-		add_submenu_page(
+		$page = add_submenu_page(
 			'edit.php?post_type=ksfp_game_key',
 			esc_html__( 'Import', 'keys-for-wp-woo-fungies' ),
 			esc_html__( 'Import', 'keys-for-wp-woo-fungies' ),
@@ -67,6 +67,10 @@ class Ksfp_Keys_Manager {
 	}
 
 	public function import_page_content() {
+		if ( ! current_user_can( 'upload_files' ) ) {
+			wp_die( esc_html__( 'Nie masz uprawnień do importu.', 'keys-for-wp-woo-fungies' ) );
+		}
+
 		$isSubmitted = isset( $_POST['submit'] );
 		$verify      = $isSubmitted ? wp_verify_nonce( isset( $_POST['import_csv_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['import_csv_nonce'] ) ) : false, 'import_csv' ) : false;
 
@@ -75,19 +79,19 @@ class Ksfp_Keys_Manager {
 			exit;
 		}
 
-		$csv_file = isset( $_FILES['csv_file'] ) ? $_FILES['csv_file'] : false;
-		$isCsv    = $csv_file ? pathinfo( $csv_file['name'], PATHINFO_EXTENSION ) === 'csv' : false;
-		$isTypeOk = $csv_file ? $csv_file['type'] === 'text/csv' : false;
+		$csv_file = isset( $_FILES['csv_file'] ) && pathinfo( stripslashes( sanitize_file_name( $_FILES['csv_file']['name'] ) ), PATHINFO_EXTENSION ) === 'csv' && $_FILES['csv_file']['type'] === 'text/csv' ? $_FILES['csv_file'] : false;
 
-		$onlyCsv = $csv_file && $isCsv && $isTypeOk;
+		if ( ! empty( $_FILES ) && ! $csv_file ) {
+			wp_die( esc_html__( 'Nieprawidłowy format pliku.', 'keys-for-wp-woo-fungies' ) );
+		}
 
-		if ( $csv_file && $csv_file['error'] == UPLOAD_ERR_OK && $onlyCsv ) {
-			$file_path = $csv_file['tmp_name'];
+		if ( $csv_file && $csv_file['error'] == UPLOAD_ERR_OK ) {
+			$file_path = realpath( $csv_file['tmp_name'] );
 
 			$this->process_csv_file( $file_path );
 
 			echo '<div class="updated"><p>' . esc_html__( 'Success', 'keys-for-wp-woo-fungies' ) . '</p></div>';
-		} elseif ( ( $csv_file && $csv_file['error'] !== UPLOAD_ERR_OK ) || ( ! $onlyCsv && $csv_file ) ) {
+		} elseif ( ( $csv_file && $csv_file['error'] !== UPLOAD_ERR_OK ) ) {
 			echo '<div class="error"><p>' . esc_html__( 'Error during import', 'keys-for-wp-woo-fungies' ) . '</p></div>';
 		}
 
@@ -96,10 +100,10 @@ class Ksfp_Keys_Manager {
 
 	public function add_custom_columns( $columns ) {
 		$new_columns             = array();
-		$new_columns['game_key'] = esc_html__('Klucz', 'keys-for-wp-woo-fungies' );
-		$new_columns['game']     = esc_html__('Gra', 'keys-for-wp-woo-fungies' );
-		$new_columns['status']   = esc_html__('Status', 'keys-for-wp-woo-fungies' );
-		$new_columns['date']     = esc_html__('Data dodania', 'keys-for-wp-woo-fungies' );
+		$new_columns['game_key'] = esc_html__( 'Klucz', 'keys-for-wp-woo-fungies' );
+		$new_columns['game']     = esc_html__( 'Gra', 'keys-for-wp-woo-fungies' );
+		$new_columns['status']   = esc_html__( 'Status', 'keys-for-wp-woo-fungies' );
+		$new_columns['date']     = esc_html__( 'Data dodania', 'keys-for-wp-woo-fungies' );
 
 		return $new_columns;
 	}
@@ -203,10 +207,9 @@ class Ksfp_Keys_Manager {
 			update_post_meta( $post_id, '_is_new_post', '0' );
 		}
 
-		if ( ! is_plugin_version_paid() ) {
+		if ( ! ksfp_is_plugin_version_paid() ) {
 			$taxonomies = wp_get_post_terms( $post_id, 'ksfp_game', array( 'fields' => 'ids' ) );
 			if ( empty( $taxonomies ) ) {
-				set_transient( 'my_plugin_admin_notice', esc_html__('Wybór gry jest wymagany.', 'keys-for-wp-woo-fungies' ), 45 );
 				wp_die( esc_html__( 'Wybór gry jest wymagany.', 'keys-for-wp-woo-fungies' ) );
 			}
 
@@ -224,12 +227,6 @@ class Ksfp_Keys_Manager {
 				'exclude'     => array( $post_id ),
 			);
 			$posts = get_posts( $args );
-
-			// if (count($posts) >= 1 && get_post_meta($post_id, '_is_new_post', true) === '1') {
-			// wp_delete_post($post_id, true);
-			// set_transient('my_plugin_admin_notice', esc_html__'Osiągnięto limit wersji darmowej dodanych kluczy dla wybranej gry.', 'keys-for-wp-woo-fungies'), 45);
-			// wp_die(esc_html__('Osiągnięto limit wersji darmowej dodanych kluczy dla wybranej gry.', 'keys-for-wp-woo-fungies'));
-			// }
 		}
 
 		if ( isset( $_POST['ksfp_game_key_field'] ) ) {
@@ -283,6 +280,13 @@ class Ksfp_Keys_Manager {
 			$name = isset( $row[ $name_index ] ) ? $row[ $name_index ] : '';
 			$key  = isset( $row[ $key_index ] ) ? $row[ $key_index ] : '';
 
+			if ( ! $name ) {
+				return;
+			}
+			if ( ! $key ) {
+				return;
+			}
+
 			$name = sanitize_title( $name );
 			$key  = sanitize_text_field( $key );
 
@@ -291,7 +295,7 @@ class Ksfp_Keys_Manager {
 			if ( ! $term ) {
 				$term_args = array(
 					'description' => '',
-					'slug'        => sanitize_title( $name ),
+					'slug'        => $name,
 				);
 				wp_insert_term( $name, 'ksfp_game', $term_args );
 			}

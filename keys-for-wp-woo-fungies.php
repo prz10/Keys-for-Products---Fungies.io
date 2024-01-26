@@ -17,10 +17,13 @@
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 define( 'KSFP_KEYS_FOR_PRODUCTS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'KSFP_KEYS_FOR_PRODUCTS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'KSFP_KEYS_FOR_PRODUCTS_ASSETS_URL', KSFP_KEYS_FOR_PRODUCTS_PLUGIN_URL . 'public/' );
-define( 'KSFP_KEYS_FOR_PRODUCTS_IMAGES_URL', KSFP_KEYS_FOR_PRODUCTS_ASSETS_URL . 'images/' );
+define( 'KSFP_KEYS_FOR_PRODUCTS_ASSETS_URL', KSFP_KEYS_FOR_PRODUCTS_PLUGIN_URL . '/public' );
+define( 'KSFP_KEYS_FOR_PRODUCTS_IMAGES_URL', KSFP_KEYS_FOR_PRODUCTS_ASSETS_URL . '/images' );
 
 add_action( 'init', 'ksfp_init_keys_for_wordpress_woocommerce' );
+add_action( 'admin_init', 'ksfp_init_register_styles' );
+
+
 
 function ksfp_activate_plugin_keys_for_wp_woo_fungies() {
 	add_option( 'ksfp-keys-for-wp-woo-version', 'free' );
@@ -32,7 +35,15 @@ function ksfp_init_keys_for_wordpress_woocommerce() {
 	load_textdomain( 'keys-for-wp-woo-fungies', KSFP_KEYS_FOR_PRODUCTS_PLUGIN_PATH . 'languages/keys-for-wp-woo-fungies-en_US.mo' );
 }
 
-function is_plugin_version_paid() {
+function ksfp_init_register_styles() {
+	wp_register_style( 'keys-for-wp-woo-fungies-stylesheet', KSFP_KEYS_FOR_PRODUCTS_ASSETS_URL . '/styles/style.css' );
+}
+
+function ksfp_admin_plugin_styles() {
+	wp_enqueue_style( 'keys-for-wp-woo-fungies-stylesheet' );
+}
+
+function ksfp_is_plugin_version_paid() {
 	$version = get_option( 'ksfp-keys-for-wp-woo-version' );
 	return ( $version === 'paid' );
 }
@@ -56,7 +67,7 @@ function ksfp_woocommerce_missing_notice() {
 }
 
 function ksfp_register_admin_menu() {
-	add_menu_page(
+	$page = add_menu_page(
 		'Keys for Products',
 		'Keys for Products',
 		'manage_options',
@@ -65,11 +76,14 @@ function ksfp_register_admin_menu() {
 		'dashicons-admin-generic',
 		80
 	);
+
+	add_action( "admin_print_styles-{$page}", 'ksfp_admin_plugin_styles' );
 }
+
 add_action( 'admin_menu', 'ksfp_register_admin_menu' );
 
 function ksfp_keys_for_products_page_callback() {
-	if ( is_plugin_version_paid() ) {
+	if ( ksfp_is_plugin_version_paid() ) {
 		include_once plugin_dir_path( __FILE__ ) . 'templates/paid-version-template.php';
 	} else {
 		include_once plugin_dir_path( __FILE__ ) . 'templates/free-version-template.php';

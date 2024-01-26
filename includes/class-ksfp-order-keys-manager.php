@@ -91,9 +91,9 @@ class Ksfp_Order_Keys_Manager {
 
 		$customer_email = $order->get_billing_email();
 
-		$email_content = $post_purchase_description . '<br>' . esc_html__('Your game key: ', 'keys-for-wp-woo-fungies' ) . $game_key;
+		$email_content = $post_purchase_description . '<br>' . esc_html__( 'Your game key: ', 'keys-for-wp-woo-fungies' ) . $game_key;
 
-		$email_subject = esc_html__('Your game key', 'keys-for-wp-woo-fungies' );
+		$email_subject = esc_html__( 'Your game key', 'keys-for-wp-woo-fungies' );
 
 		wc_mail( $customer_email, $email_subject, $email_content );
 	}
@@ -122,7 +122,7 @@ class Ksfp_Order_Keys_Manager {
 
 	public function display_order_keys_info( $order ) {
 		echo '<div class="order_keys_info_section">';
-		echo '<h2>' . esc_html__('Informacje o kluczach', 'keys-for-wp-woo-fungies' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Informacje o kluczach', 'keys-for-wp-woo-fungies' ) . '</h2>';
 
 		foreach ( $order->get_items() as $item_id => $item ) {
 			$product_id  = $item->get_product_id();

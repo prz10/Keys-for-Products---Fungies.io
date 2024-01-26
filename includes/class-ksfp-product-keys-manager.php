@@ -14,7 +14,7 @@ class Ksfp_Product_Keys_Manager {
 
 	public function add_keys_tab( $tabs ) {
 		$tabs['keys_tab'] = array(
-			'label'  => esc_html__('Klucze', 'keys-for-wp-woo-fungies' ),
+			'label'  => esc_html__( 'Klucze', 'keys-for-wp-woo-fungies' ),
 			'target' => 'keys_options_panel',
 			'class'  => array(),
 		);
@@ -29,25 +29,25 @@ class Ksfp_Product_Keys_Manager {
 		woocommerce_wp_checkbox(
 			array(
 				'id'    => '_enable_keys',
-				'label' => esc_html__('Włącz obsługę kluczy', 'keys-for-wp-woo-fungies' ),
+				'label' => esc_html__( 'Włącz obsługę kluczy', 'keys-for-wp-woo-fungies' ),
 			)
 		);
 
 		wp_nonce_field( 'keys_enable_keys', 'keys_enable_keys_nonce' );
 
 		// Selektor do wyboru gry
-		$terms = get_terms( 'ksfp_game', array( 'hide_empty' => false ) );
+		$terms = get_terms( 'ksfp_game' );
 		woocommerce_wp_select(
 			array(
 				'id'      => '_selected_game',
-				'label'   => esc_html__('Gra', 'keys-for-wp-woo-fungies' ),
+				'label'   => esc_html__( 'Gra', 'keys-for-wp-woo-fungies' ),
 				'options' => array_reduce(
 					$terms,
 					function ( $options, $term ) {
 						$options[ $term->slug ] = $term->name;
 						return $options;
 					},
-					array( '' => esc_html__('Wybierz grę', 'keys-for-wp-woo-fungies' ) )
+					array( '' => esc_html__( 'Wybierz grę', 'keys-for-wp-woo-fungies' ) )
 				),
 			)
 		);
