@@ -82,7 +82,6 @@ class Ksfp_Keys_Manager {
 		$file_name      = isset( $_FILES['csv_file']['name'] ) ? sanitize_file_name( wp_unslash( $_FILES['csv_file']['name'] ) ) : false;
 		$file_type      = isset( $_FILES['csv_file']['type'] ) ? sanitize_mime_type( wp_unslash( $_FILES['csv_file']['type'] ) ) : false;
 		$file_error     = isset( $_FILES['csv_file']['error'] ) ? intval( wp_unslash( $_FILES['csv_file']['error'] ) ) : false;
-		$file_tmp_name  = isset( $_FILES['csv_file']['tmp_name'] ) ? sanitize_text_field( wp_unslash( $_FILES['csv_file']['tmp_name'] ) ) : false;
 		$file_extension = pathinfo( $file_name, PATHINFO_EXTENSION );
 
 		$csv_file = $file_name && $file_type && $file_extension === 'csv' && $file_type === 'text/csv' ? $file_input : false;
@@ -92,7 +91,7 @@ class Ksfp_Keys_Manager {
 		}
 
 		if ( $csv_file && UPLOAD_ERR_OK === $file_error ) {
-			$file_path = realpath( $file_tmp_name );
+			$file_path = realpath( $_FILES['csv_file']['tmp_name'] );
 
 			$this->process_csv_file( $file_path );
 
