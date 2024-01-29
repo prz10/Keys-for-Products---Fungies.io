@@ -91,7 +91,7 @@ class Ksfp_Keys_Manager {
 		}
 
 		if ( $csv_file && UPLOAD_ERR_OK === $file_error ) {
-			$file_path = isset( $_FILES['csv_file']['tmp_name'] ) ? realpath( $_FILES['csv_file']['tmp_name'] ) : false;
+			$file_path = isset( $_FILES['csv_file']['tmp_name'] ) ? realpath( sanitize_text_field( $_FILES['csv_file']['tmp_name'] ) ) : false;
 
 			$this->process_csv_file( $file_path );
 
