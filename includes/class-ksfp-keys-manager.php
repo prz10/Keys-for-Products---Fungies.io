@@ -71,27 +71,33 @@ class Ksfp_Keys_Manager {
 			wp_die( esc_html__( 'Nie masz uprawnień do importu.', 'keys-for-wp-woo-fungies' ) );
 		}
 
-		$isSubmitted = isset( $_POST['submit'] );
-		$verify      = $isSubmitted ? wp_verify_nonce( isset( $_POST['import_csv_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['import_csv_nonce'] ) ) : false, 'import_csv' ) : false;
+		$is_submitted = isset( $_POST['submit'] );
+		$verify       = $is_submitted ? wp_verify_nonce( isset( $_POST['import_csv_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['import_csv_nonce'] ) ) : false, 'import_csv' ) : false;
 
-		if ( $isSubmitted && ! $verify ) {
-			print esc_html__( 'Error during import', 'keys-for-wp-woo-fungies' );
-			exit;
+		if ( $is_submitted && ! $verify ) {
+			wp_die( esc_html__( 'Error during import', 'keys-for-wp-woo-fungies' ) );
 		}
 
-		$csv_file = isset( $_FILES['csv_file'] ) && pathinfo( stripslashes( sanitize_file_name( $_FILES['csv_file']['name'] ) ), PATHINFO_EXTENSION ) === 'csv' && $_FILES['csv_file']['type'] === 'text/csv' ? $_FILES['csv_file'] : false;
+		$file_input     = isset( $_FILES['csv_file'] ) && ! empty( $_FILES['csv_file'] );
+		$file_name      = isset( $_FILES['csv_file']['name'] ) ? sanitize_file_name( wp_unslash( $_FILES['csv_file']['name'] ) ) : false;
+		$file_type      = isset( $_FILES['csv_file']['type'] ) ? sanitize_mime_type( wp_unslash( $_FILES['csv_file']['type'] ) ) : false;
+		$file_error     = isset( $_FILES['csv_file']['error'] ) ? intval( wp_unslash( $_FILES['csv_file']['error'] ) ) : false;
+		$file_tmp_name  = isset( $_FILES['csv_file']['tmp_name'] ) ? sanitize_text_field( wp_unslash( $_FILES['csv_file']['tmp_name'] ) ) : false;
+		$file_extension = pathinfo( $file_name, PATHINFO_EXTENSION );
+
+		$csv_file = $file_name && $file_type && $file_extension === 'csv' && $file_type === 'text/csv' ? $file_input : false;
 
 		if ( ! empty( $_FILES ) && ! $csv_file ) {
 			wp_die( esc_html__( 'Nieprawidłowy format pliku.', 'keys-for-wp-woo-fungies' ) );
 		}
 
-		if ( $csv_file && $csv_file['error'] == UPLOAD_ERR_OK ) {
-			$file_path = realpath( $csv_file['tmp_name'] );
+		if ( $csv_file && UPLOAD_ERR_OK === $file_error ) {
+			$file_path = realpath( $file_tmp_name );
 
 			$this->process_csv_file( $file_path );
 
 			echo '<div class="updated"><p>' . esc_html__( 'Success', 'keys-for-wp-woo-fungies' ) . '</p></div>';
-		} elseif ( ( $csv_file && $csv_file['error'] !== UPLOAD_ERR_OK ) ) {
+		} elseif ( $csv_file && UPLOAD_ERR_OK !== $file_error ) {
 			echo '<div class="error"><p>' . esc_html__( 'Error during import', 'keys-for-wp-woo-fungies' ) . '</p></div>';
 		}
 
@@ -119,7 +125,7 @@ class Ksfp_Keys_Manager {
 				break;
 			case 'status':
 				$status = get_post_meta( $post_id, 'ksfp_game_key_status', true );
-				echo $status === 'active' ? esc_html__( 'Aktywny', 'keys-for-wp-woo-fungies' ) : esc_html__( 'Nieaktywny', 'keys-for-wp-woo-fungies' );
+				echo 'active' === $status ? esc_html__( 'Aktywny', 'keys-for-wp-woo-fungies' ) : esc_html__( 'Nieaktywny', 'keys-for-wp-woo-fungies' );
 				break;
 			case 'date':
 				echo esc_html( get_the_date( '', $post_id ) );
@@ -242,8 +248,8 @@ class Ksfp_Keys_Manager {
 		}
 	}
 
-	private function prepare_csv_to_associative_arr( $filePath ) {
-		$file   = file( $filePath );
+	private function prepare_csv_to_associative_arr( $file_path ) {
+		$file   = file( $file_path );
 		$rows   = array_map( 'str_getcsv', $file );
 		$header = array_shift( $rows );
 		$csv    = array();
@@ -255,13 +261,13 @@ class Ksfp_Keys_Manager {
 
 
 	private function process_csv_file( $file_path ) {
-		$file_path = sanitize_text_field( $file_path );
-		$csvToArr  = $this->prepare_csv_to_associative_arr( $file_path );
+		$file_path  = sanitize_text_field( $file_path );
+		$csv_to_arr = $this->prepare_csv_to_associative_arr( $file_path );
 
-		if ( ! $csvToArr || empty( $csvToArr ) ) {
+		if ( ! $csv_to_arr || empty( $csv_to_arr ) ) {
 			return;
 		}
-		$header = array_keys( $csvToArr[0] );
+		$header = array_keys( $csv_to_arr[0] );
 		$header = array_map( 'sanitize_text_field', $header );
 
 		$header     = array_map( 'strtolower', $header );
@@ -276,7 +282,7 @@ class Ksfp_Keys_Manager {
 			$key_index = 1;
 		}
 
-		foreach ( $csvToArr as $row ) {
+		foreach ( $csv_to_arr as $row ) {
 			$name = isset( $row[ $name_index ] ) ? $row[ $name_index ] : '';
 			$key  = isset( $row[ $key_index ] ) ? $row[ $key_index ] : '';
 

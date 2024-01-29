@@ -14,7 +14,7 @@
 			<?php echo esc_html__( 'Hej!', 'keys-for-wp-woo-fungies' ); ?>
 		</h1>
 		<p><?php echo esc_html__( 'Your plugin version:', 'keys-for-wp-woo-fungies' ); ?> <span
-				class='version-plugin'><?php echo esc_html__( get_option( 'ksfp-keys-for-wp-woo-version' ) ); ?></span>
+				class='version-plugin'><?php echo esc_html( get_option( 'ksfp-keys-for-wp-woo-version' ) ); ?></span>
 		</p>
 
 	</div>
